@@ -1,0 +1,10 @@
+crack-hash:
+  worker:
+    host: http://${worker}:${8081}
+  manager:
+    alphabet: abcd
+    workers: 1
+    job-timeout: PT2M
+
+server:
+  port: ${8082}

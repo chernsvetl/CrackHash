@@ -1,0 +1,84 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.6.5'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'ru.nsu'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+
+    jaxb
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.googlecode.combinatoricslib:combinatoricslib:2.3'
+    implementation 'commons-codec:commons-codec:1.15'
+
+    implementation 'com.sun.xml.bind:jaxb-xjc:2.3.1'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
+    implementation 'javax.xml.bind:jaxb-api:2.2.6'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2'
+
+    implementation 'org.apache.camel:camel-netty4:2.25.4'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    jaxb (
+            'com.sun.xml.bind:jaxb-xjc:2.3.1',
+            'com.sun.xml.bind:jaxb-impl:2.3.1',
+            'org.glassfish.jaxb:jaxb-runtime:2.3.3',
+            'javax.xml.bind:jaxb-api:2.2.6'
+    )
+}
+
+task jaxb {
+    System.setProperty('javax.xml.accessExternalSchema', 'all')
+    def jaxbTargetDir = file("build/src/generated/sources/jaxb")
+    doLast {
+        jaxbTargetDir.mkdirs()
+        ant.taskdef(
+                name: 'xjc',
+                classname: 'com.sun.tools.xjc.XJCTask',
+                classpath: configurations.jaxb.asPath
+        )
+        ant.jaxbTargetDir = jaxbTargetDir
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.roytuts.jaxb',
+                schema: 'src/main/resources/xsd/CrackHashManagerSchema.xsd'
+        )
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'com.roytuts.jaxb',
+                schema: 'src/main/resources/xsd/CrackHashWorkerSchema.xsd'
+        )
+    }
+}
+
+sourceSets {
+    main.java.srcDirs = ['build/src/generated/sources/jaxb','src/main/java']
+}
+
+compileJava.dependsOn jaxb
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

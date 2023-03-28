@@ -1,0 +1,7 @@
+crack-hash:
+  manager:
+    host: http://${manager}:${8082}
+
+server:
+  port: ${8081}
+

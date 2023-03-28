@@ -1,0 +1,14 @@
+spring:
+  config:
+    import: optional:file:.env.local[.properties]
+
+crack-hash:
+  worker:
+    host: http://${WORKER_HOST}:${WORKER_PORT}
+  manager:
+    alphabet: abcd
+    workers: 1
+    job-timeout: PT2M
+
+server:
+  port: ${MANAGER_PORT}

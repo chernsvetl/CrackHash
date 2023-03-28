@@ -1,0 +1,8 @@
+<crac:CrackHashWorkerResponse xmlns:crac="http://ccfit.nsu.ru/schema/crack-hash-response">
+  <RequestId>string</RequestId>
+  <PartNumber>3</PartNumber>
+  <Answers>
+    <!--Zero or more repetitions:-->
+    <words>string</words>
+  </Answers>
+</crac:CrackHashWorkerResponse>
